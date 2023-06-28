@@ -39,9 +39,15 @@ const questions = [
   // Many versions of the designating questions and answers have been made
   
   const questionElement = document.getElementById("question");
-  const answerButtons = document.getElementById("answer-button");
-  const nextButton = document.getElementById("#Next-id");
-  const feedback = document.getElementById("#feedback")
+  const answerButtons = document.getElementById("answer-buttons");
+  const nextButton = document.querySelector("#Next-id");
+  const feedback = document.querySelector("#feedback");
+
+  var timer = document.querySelector("#timer");
+  var timerCount = 100;
+  var timerInterval;
+
+  var attempts = 0;
   
   
   let currentQuestionIndex = 0;
@@ -50,10 +56,27 @@ const questions = [
   function startQuiz(){
     currentQuestionIndex = 0;
     score = 0;
+    timerCount = 100;
     nextButton.innerHTML = "Next question >";
+    startTimer();
     showQuestion();
-  
+
   }
+
+  function startTimer() {
+    let timerInterval = setInterval(function () {
+        timerCount--;
+        timer.textContent = "Time: " + timerCount;
+        if (timerCount <= 0) {
+            clearInterval(timerInterval);
+            showScore();
+
+        }
+
+
+    }, 1000);
+}
+
   
   function showQuestion (){
     resetState();
@@ -64,7 +87,7 @@ const questions = [
     // Numbering questions can be removed. Cannot be used as attempts for local storage
   
   
-    currentQuestion.answersforEach(answer => {
+    currentQuestion.answers.forEach(answer => {
       // The variable button has to be added for each time an answer set has to be made
       const button = document.createElement("button");
       // Each answer will have to be added into the the HTML in each button
@@ -94,13 +117,18 @@ const questions = [
     const selectedBtn = e.target;
     const isCorrect = selectedBtn.dataset.correct === "true";
     if(isCorrect){
-      selectedBtn.classList.add("correct");
       feedback.innerHTML="Correct!";
       score++;
     } else {
-      selectedBtn.classList.add("incorrect");
       feedback.innerHTML="Incorrect...";
+      timerCount--;
     }
+    Array.from(answerButtons.children).forEach(button => {
+        if(button.dataset.correct === "true"){
+            feedback.innerHTML ="correct";
+            nextButton.style.display ="block";
+        }
+    });
   }
   
   function handleNextButton(){
@@ -114,8 +142,11 @@ const questions = [
   
   function showScore(){
     resetState();
+    clearInterval(timerInterval);
     questionElement.innerHTML = "Congrats on completing the quiz. Your score is " + score + "/5";
+    nextButton.style.display ="block";
     nextButton.innerHTML = "Take Quiz Again";
+
   }
   
   // Below is the origin of the start quiz button
