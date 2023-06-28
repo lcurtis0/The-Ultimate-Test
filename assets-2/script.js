@@ -1,20 +1,20 @@
 const questions = [
     {
-      question: 'What day is it?',
+      question: 'Which is a Winter month?',
       answers: [
-       { choice: "Friday", correct: true},
-       { choice: "Saturday", correct: false},   
-       { choice: "Sunday", correct: false},
-       { choice: "Monday", correct: false}
+       { choice: "December", correct: true},
+       { choice: "March", correct: false},   
+       { choice: "June", correct: false},
+       { choice: "August", correct: false}
       ]
     },
     {
-      question: 'What is your favorite color?',
+      question: 'What color is the sky during the day?',
       answers: [
-       { choice: "orange", correct: false},
-       { choice: "blue", correct: false},   
+       { choice: "purple", correct: false},
+       { choice: "blue", correct: true},   
        { choice: "yellow", correct: false},
-       { choice: "green", correct: true}
+       { choice: "green", correct: false}
       ]
     },
     {
@@ -27,21 +27,32 @@ const questions = [
       ]
     },
     {
-      question: 'What are the first three letters of the english alphabet?',
+      question: 'what is 12 + 6?',
       answers: [
-       { choice: "abc", correct: true},
-       { choice: "def", correct: false},   
-       { choice: "ghi", correct: false},
-       { choice: "jkl", correct: false}
+       { choice: "17", correct: false},
+       { choice: "14", correct: false},   
+       { choice: "15", correct: false},
+       { choice: "18", correct: true}
       ]
     },
+    {
+        question: 'what do you do at a stop sign?',
+        answers: [
+         { choice: "Turn right", correct: false},
+         { choice: "Go", correct: false},   
+         { choice: "Stop", correct: false},
+         { choice: "Yeild", correct: true}
+        ]
+      },
   ];
   // Many versions of the designating questions and answers have been made
   
   const questionElement = document.getElementById("question");
   const answerButtons = document.getElementById("answer-buttons");
   const nextButton = document.querySelector("#Next-id");
-  const feedback = document.querySelector("#feedback");
+
+  var startButton = document.querySelector("#start-button");
+
 
   var timer = document.querySelector("#timer");
   var timerCount = 100;
@@ -53,11 +64,16 @@ const questions = [
   let currentQuestionIndex = 0;
   let score = 0;
   
+
+  startButton.addEventListener("click", startQuiz);
+
+
   function startQuiz(){
     currentQuestionIndex = 0;
     score = 0;
     timerCount = 100;
     nextButton.innerHTML = "Next question >";
+    startButton.style.display = "none";
     startTimer();
     showQuestion();
 
@@ -117,15 +133,12 @@ const questions = [
     const selectedBtn = e.target;
     const isCorrect = selectedBtn.dataset.correct === "true";
     if(isCorrect){
-      feedback.innerHTML="Correct!";
       score++;
     } else {
-      feedback.innerHTML="Incorrect...";
-      timerCount--;
+      timerCount = timerCount - 10 ;
     }
     Array.from(answerButtons.children).forEach(button => {
         if(button.dataset.correct === "true"){
-            feedback.innerHTML ="correct";
             nextButton.style.display ="block";
         }
     });
@@ -142,10 +155,14 @@ const questions = [
   
   function showScore(){
     resetState();
-    clearInterval(timerInterval);
+    timerCount = 0;
     questionElement.innerHTML = "Congrats on completing the quiz. Your score is " + score + "/5";
-    nextButton.style.display ="block";
-    nextButton.innerHTML = "Take Quiz Again";
+    nextButton.style.display ="none";
+    startButton.style.display ="block";
+    attempts++;
+    console.log("attempt" + attempts + score);
+    localStorage.attempts("attempts", score);
+
 
   }
   
