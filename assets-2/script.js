@@ -1,119 +1,160 @@
 
+var attempts = document.querySelector("#attempts")
+var attemptsCounter = 0;
+var score = document.querySelector("#score")
+var timer = document.querySelector("#timer-text")
+var timerCount;
+var doneCounter = 0;
+var feedback = document.querySelector('#feedback');
+var startButton = document.querySelector('#start-button');
+var questions = document.querySelector('#questions');
+var answers = document.querySelector('#answers');
 
-var questionEL = document.querySelector("#question");
-var answersEl = document.querySelector('#answers')
-var startEl = document.querySelector("#start-quiz");
-var current = 0;
-
-// basic html elements to interact with
-
-//button for which starts the quiz (likely a large function)
-
-// score - to keep track of right and wrong answers
-var correctCount = 0;
-var wrongCount = 0;
-
-allQuestions = {
-
-  'What day is it?' : ["Friday", "Saturday", "Sunday", "Monday", 1],
-  'What is your favorite color?' : ["orange", "blue", "yellow", "green", 4],
-  'What are the first three letters of the english alphabet?' : ["abc", "efg", "hij", "klm", 1],
-  'What colors are the U.S. flag?': ["green, black, orange", "red, white, blue", "orange, yellow, green", "purple, grey, gold"]
-
-}
-
-function beginQuiz(curr) {
-  console.log ("Quiz has begun");
-  var question = Object.keys(allQuestions)[curr];
-
-  questionEL.innerHTML = '';
-  questionEl.innerHTML = question; 
-
-}
-
-function loadanswers(){
-
-  var answers = allQuestions[Object.keys(allQuestions)[curr]];
-
-  answerArea.innerHTML = '';
-
-}
-
-
-//for loop to create answers according to that number of answers in array
-for (var i = 0; i < answers.length; i++){
-  // Each answer is created into created <div> element
-  var createDiv = document.createElement('div'),
-    text = document.createTextNode(answers[i]);
-    //the append child sends 
-    createDiv.appendChild(text);      
-    createDiv.addEventListener("click", checkAnswer(i, answers));
-    
-    
-    answerArea.appendChild(createDiv);
-  }
-
-  function checkAnswer(i, arr) {
-    // This is the function that will run, when clicked on one of the answers
-    // Check if givenAnswer is sams as the correct one
-    // After this, check if it's the last question:
-    // If it is: empty the answerArea and let them know it's done.
-    
-    return function () {
-      var givenAnswer = i,
-          correctAnswer = arr[arr.length-1];
-      
-      if (givenAnswer === correctAnswer) {
-        addChecker(true);             
-      } else {
-        addChecker(false);                        
-      }
-      
-      if (current < Object.keys(allQuestions).length -1) {
-        current += 1;
-        
-        loadQuestion(current);
-        loadAnswers(current);
-      } else {
-        questionArea.innerHTML = 'Done';
-        answerArea.innerHTML = '';
-      }
-                              
-    };
-  }
-  
-  function addChecker(bool) {
-  // This function adds a div element to the page
-  // Used to see if it was correct or false
-  
-    var createDiv = document.createElement('div'),
-        txt       = document.createTextNode(current + 1);
-    
-    createDiv.appendChild(txt);
-    
-    if (bool) {
-      
-      createDiv.className += 'correct';
-      checker.appendChild(createDiv);
-    } else {
-      createDiv.className += 'false';
-      checker.appendChild(createDiv);
+var questionSet = [
+    {
+        question: 'What day is it?',
+        answers: ["Friday", "Saturday", "Sunday", "Monday"],
+        correct: "Friday"
+    },
+    {
+        question: 'What is your favorite color?',
+        answers: ["orange", "blue", "yellow", "green"],
+        correct: "green"
+    },
+    {
+        question: 'What are the first three letters of the english alphabet?',
+        answers: ["abc", "def", "ghi", "jkl"],
+        correct: "abc"
+    },
+    {
+        question: 'What colors are the U.S. flag?',
+        answers: ["green, black, orange", "red, white, blue", "orange, yellow, green", "purple, grey, gold"],
+        correct: "red, white, blue"
     }
-  }
-  
-  
-  // Start the quiz right away
-  loadQuestion(current);
-  loadAnswers(current);
-    
+];
 
 
 
 
+function init() {
+    getScore();
+}
+
+function beginQuiz() {
+    timerCount = 100;
+    startButton.disabled = true;
+    startTimer()
+    renderQuestions()
+}
+
+function quizDone() {
+    questions[1].textContent = ("You're done with the quiz congrats!")
+    startButton.disabled = false;
+    doneCounter++;
+    feedback.textContent = ("Here's how you did " + score + "/ 5");
+}
+
+function startTimer() {
+    let timerInterval = setInterval(function () {
+        timerCount--;
+        timer.textContent = "Time: " + timerCount;
+        if (timerCount <= 0) {
+            clearInterval(timerInterval);
+            quizDone();
+
+        }
+
+
+    }, 1000);
+}
+
+function renderAnswers(answers) {
+    answers.forEach(function (element) {
+        console.log(answers, element);
+        // create div 
+        element = document.createElement('div');
+        element.innerHTML = answers.textContent;
+        // add text content 
 
 
 
 
-startEl.addEventListener ("click", beginQuiz);
+        document.getElementById(element).addEventListener("click", renderQuestions);
+       
+        // add event listener 
+
+        document.getElementById("answers").appendChild(element);
+        // append div to something 
+    });
+
+}
+
+function renderQuestions() {
+    for (var i = 0; i < questionSet.length; i++) {
+        console.log(questions, questionSet[i]);
+        questions.textContent = questionSet[i].question;
+        renderAnswers(questionSet[i].answers);
+
+        answers.addEventListener("click", function (event) {
+            var response = event.answers;
+            console.log(event.answers);
+            if (answers === correct) {
+                score++;
+                feedback.textContent = ("Correct!");
+                var point = response.getAttribute("data-state");
+            } else {
+                timerCount--;
+                feedback.textContent = ("Incorrect!");
+            }
+        })
+    }
+    /* 
+   console.log(questions,questionSet[0]);
+  questions.textContent = questionSet[0].question;
+  /* for (var i =0; i < questionSet.length; i++ ){
+       response.textContent = (questions[i])
+       if(response === answers[i]){
+        score++;
+        feedback.textContent = ("Correct!");
+       } else {
+        timerCount--;
+        feedback.textContent = ("Incorrect!");
+       }
+    }*/
+}
+function setScore() {
+
+    // may need for loop for the number of attempts ot attempts++; or create a variable for attempts counted
+
+    attempts.textContent = score;
+    localStorage.setItem("attempt", score);
+    console.log("attempt" + attemptsCounter + ": " + score)
+}
+
+function getScore() {
+    var storedScore = localStorage.getItem("attempt");
+    if (storedScore === null) {
+        score = 0;
+    } else {
+        score = storedScore;
+    }
+    score.textContent = storedScore;
+}
+
+// skipped to line 172 in word fame reference 
+
+startButton.addEventListener("click", beginQuiz);
 
 
+init();
+
+var resetButton = document.querySelector(".reset-button");
+
+function resetQuiz() {
+    // Resets win and loss counts
+    scoreCounter = 0;
+    // Renders win and loss counts and sets them into client storage
+    setScore()
+}
+// Attaches event listener to button
+resetButton.addEventListener("click", resetQuiz);
