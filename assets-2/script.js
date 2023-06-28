@@ -1,160 +1,142 @@
-
-var attempts = document.querySelector("#attempts")
-var attemptsCounter = 0;
-var score = document.querySelector("#score")
-var timer = document.querySelector("#timer-text")
-var timerCount;
-var doneCounter = 0;
-var feedback = document.querySelector('#feedback');
-var startButton = document.querySelector('#start-button');
-var questions = document.querySelector('#questions');
-var answers = document.querySelector('#answers');
-
-var questionSet = [
+const questions = [
     {
-        question: 'What day is it?',
-        answers: ["Friday", "Saturday", "Sunday", "Monday"],
-        correct: "Friday"
+      question: 'What day is it?',
+      answers: [
+       { choice: "Friday", correct: true},
+       { choice: "Saturday", correct: false},   
+       { choice: "Sunday", correct: false},
+       { choice: "Monday", correct: false}
+      ]
     },
     {
-        question: 'What is your favorite color?',
-        answers: ["orange", "blue", "yellow", "green"],
-        correct: "green"
+      question: 'What is your favorite color?',
+      answers: [
+       { choice: "orange", correct: false},
+       { choice: "blue", correct: false},   
+       { choice: "yellow", correct: false},
+       { choice: "green", correct: true}
+      ]
     },
     {
-        question: 'What are the first three letters of the english alphabet?',
-        answers: ["abc", "def", "ghi", "jkl"],
-        correct: "abc"
+      question: 'What are the first three letters of the english alphabet?',
+      answers: [
+       { choice: "abc", correct: true},
+       { choice: "def", correct: false},   
+       { choice: "ghi", correct: false},
+       { choice: "jkl", correct: false}
+      ]
     },
     {
-        question: 'What colors are the U.S. flag?',
-        answers: ["green, black, orange", "red, white, blue", "orange, yellow, green", "purple, grey, gold"],
-        correct: "red, white, blue"
-    }
-];
-
-
-
-
-function init() {
-    getScore();
-}
-
-function beginQuiz() {
-    timerCount = 100;
-    startButton.disabled = true;
-    startTimer()
-    renderQuestions()
-}
-
-function quizDone() {
-    questions[1].textContent = ("You're done with the quiz congrats!")
-    startButton.disabled = false;
-    doneCounter++;
-    feedback.textContent = ("Here's how you did " + score + "/ 5");
-}
-
-function startTimer() {
-    let timerInterval = setInterval(function () {
-        timerCount--;
-        timer.textContent = "Time: " + timerCount;
-        if (timerCount <= 0) {
-            clearInterval(timerInterval);
-            quizDone();
-
-        }
-
-
-    }, 1000);
-}
-
-function renderAnswers(answers) {
-    answers.forEach(function (element) {
-        console.log(answers, element);
-        // create div 
-        element = document.createElement('div');
-        element.innerHTML = answers.textContent;
-        // add text content 
-
-
-
-
-        document.getElementById(element).addEventListener("click", renderQuestions);
-       
-        // add event listener 
-
-        document.getElementById("answers").appendChild(element);
-        // append div to something 
+      question: 'What are the first three letters of the english alphabet?',
+      answers: [
+       { choice: "abc", correct: true},
+       { choice: "def", correct: false},   
+       { choice: "ghi", correct: false},
+       { choice: "jkl", correct: false}
+      ]
+    },
+  ];
+  // Many versions of the designating questions and answers have been made
+  
+  const questionElement = document.getElementById("question");
+  const answerButtons = document.getElementById("answer-button");
+  const nextButton = document.getElementById("#Next-id");
+  const feedback = document.getElementById("#feedback")
+  
+  
+  let currentQuestionIndex = 0;
+  let score = 0;
+  
+  function startQuiz(){
+    currentQuestionIndex = 0;
+    score = 0;
+    nextButton.innerHTML = "Next question >";
+    showQuestion();
+  
+  }
+  
+  function showQuestion (){
+    resetState();
+    let currentQuestion = questions[currentQuestionIndex];
+    // The the question array will be played out number of current questions index
+    let questionNo = currentQuestionIndex + 1;
+    questionElement.innerHTML = questionNo + "." + currentQuestion.question;
+    // Numbering questions can be removed. Cannot be used as attempts for local storage
+  
+  
+    currentQuestion.answersforEach(answer => {
+      // The variable button has to be added for each time an answer set has to be made
+      const button = document.createElement("button");
+      // Each answer will have to be added into the the HTML in each button
+      button.innerHTML = answer.choice;
+      button.classList.add("btn");
+      // answerButton is the parent element thus button, when put in, must be apended to parent location 
+      answerButtons.appendChild(button);
+      if(answer.correct){
+        button.dataset.correct = answer.correct;
+        // answers is an array that holds an object for correct, thus answer.correct can recognized in if statement
+      }
+      //On click this plays the selectAnswer function
+      button.addEventListener("click", selectAnswer);
     });
-
-}
-
-function renderQuestions() {
-    for (var i = 0; i < questionSet.length; i++) {
-        console.log(questions, questionSet[i]);
-        questions.textContent = questionSet[i].question;
-        renderAnswers(questionSet[i].answers);
-
-        answers.addEventListener("click", function (event) {
-            var response = event.answers;
-            console.log(event.answers);
-            if (answers === correct) {
-                score++;
-                feedback.textContent = ("Correct!");
-                var point = response.getAttribute("data-state");
-            } else {
-                timerCount--;
-                feedback.textContent = ("Incorrect!");
-            }
-        })
+  }
+  
+  function resetState(){
+    nextButton.style.display = "none";
+    while(answerButtons.firstChild){
+      answerButtons.removeChild(answerButtons.firstChild)
+      // Major credit to GreatStack on YouTube for removeChild method to clear page
     }
-    /* 
-   console.log(questions,questionSet[0]);
-  questions.textContent = questionSet[0].question;
-  /* for (var i =0; i < questionSet.length; i++ ){
-       response.textContent = (questions[i])
-       if(response === answers[i]){
-        score++;
-        feedback.textContent = ("Correct!");
-       } else {
-        timerCount--;
-        feedback.textContent = ("Incorrect!");
-       }
-    }*/
-}
-function setScore() {
-
-    // may need for loop for the number of attempts ot attempts++; or create a variable for attempts counted
-
-    attempts.textContent = score;
-    localStorage.setItem("attempt", score);
-    console.log("attempt" + attemptsCounter + ": " + score)
-}
-
-function getScore() {
-    var storedScore = localStorage.getItem("attempt");
-    if (storedScore === null) {
-        score = 0;
+    // The purpose of this function to clear and set new answers
+  }
+  
+  function selectAnswer(e){
+    const selectedBtn = e.target;
+    const isCorrect = selectedBtn.dataset.correct === "true";
+    if(isCorrect){
+      selectedBtn.classList.add("correct");
+      feedback.innerHTML="Correct!";
+      score++;
     } else {
-        score = storedScore;
+      selectedBtn.classList.add("incorrect");
+      feedback.innerHTML="Incorrect...";
     }
-    score.textContent = storedScore;
-}
-
-// skipped to line 172 in word fame reference 
-
-startButton.addEventListener("click", beginQuiz);
-
-
-init();
-
-var resetButton = document.querySelector(".reset-button");
-
-function resetQuiz() {
-    // Resets win and loss counts
-    scoreCounter = 0;
-    // Renders win and loss counts and sets them into client storage
-    setScore()
-}
-// Attaches event listener to button
-resetButton.addEventListener("click", resetQuiz);
+  }
+  
+  function handleNextButton(){
+    currentQuestionIndex++;
+    if(currentQuestionIndex < questions.length){
+      showQuestion();
+    } else {
+      showScore();
+    }
+  }
+  
+  function showScore(){
+    resetState();
+    questionElement.innerHTML = "Congrats on completing the quiz. Your score is " + score + "/5";
+    nextButton.innerHTML = "Take Quiz Again";
+  }
+  
+  // Below is the origin of the start quiz button
+  nextButton.addEventListener("click", ()=>{
+    if(currentQuestionIndex < questions.length){
+      //since the next button acts as the start quiz button it must know if there are questions avaliable. 
+      //If they are avaliable then it is true 
+      handleNextButton();
+    } else {
+      startQuiz();
+    }
+  })
+  
+  startQuiz();
+  
+  
+  
+  /*
+  {
+    question: 'What colors are the U.S. flag?',
+    answers: ["green, black, orange", "red, white, blue", "orange, yellow, green", "purple, grey, gold"],
+    correct: "red, white, blue"
+  }
+  */
