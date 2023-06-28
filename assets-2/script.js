@@ -163,8 +163,8 @@ const questions = [
   }
     function recordAttempts(){
         attempts++;
-        console.log("attempt: " + attempts + score);
-        localStorage.attempts("attempts: ", score);
+        console.log("attempts: " + attempts + score);
+        //localStorage.attempts.setItem("attempts: ", score);
     }
 
 
@@ -178,7 +178,7 @@ const questions = [
     } else {
       startQuiz();
     }
-  })
+  });
   
   startQuiz();
   
