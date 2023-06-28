@@ -63,7 +63,7 @@ const questions = [
   
   let currentQuestionIndex = 0;
   let score = 0;
-  
+
 
   startButton.addEventListener("click", startQuiz);
 
@@ -83,7 +83,7 @@ const questions = [
     let timerInterval = setInterval(function () {
         timerCount--;
         timer.textContent = "Time: " + timerCount;
-        if (timerCount <= 0) {
+        if (timerCount < 0) {
             clearInterval(timerInterval);
             showScore();
 
@@ -98,9 +98,8 @@ const questions = [
     resetState();
     let currentQuestion = questions[currentQuestionIndex];
     // The the question array will be played out number of current questions index
-    let questionNo = currentQuestionIndex + 1;
-    questionElement.innerHTML = questionNo + "." + currentQuestion.question;
-    // Numbering questions can be removed. Cannot be used as attempts for local storage
+    questionElement.innerHTML = currentQuestion.question;
+   // This prints the question into the the question element div
   
   
     currentQuestion.answers.forEach(answer => {
@@ -163,8 +162,8 @@ const questions = [
   }
     function recordAttempts(){
         attempts++;
-        console.log("attempts: " + attempts + score);
-        //localStorage.attempts.setItem("attempts: ", score);
+        console.log("attempts: " + attempts + " = " + score + "/5");
+        localStorage.setItem(attempts, score);
     }
 
 
@@ -180,5 +179,5 @@ const questions = [
     }
   });
   
+
   startQuiz();
-  

@@ -7,27 +7,28 @@ const scoresList = document.querySelector("#scoresList");
 
 //const scores = JSON.parsel (localStorage.getItem("")) 
 
-const score = 5;
+const score = window.document (localStorage.getItem(score));
 
-scoreTitle.innerHTML = mostRecentScore
+saveButton.addEventListener("click", setOwner);
 
-username.addEventListener("keyup", () => {
-    saveButton.disabled = !username.value
-    recordingScores()
-})
+function setOwner(){
+    const owner = initials.input;
+    recordingScores();
+}
+
 
 savedHighScore = e => {
     e.preventDefault()
 
-    highScores.push(score)
+    owner.push(score)
     console.log("This is my score " + mostRecentScore + "I am " + initials);
 
     localStorage.setItem("highscores", JSON.stringify(highScores));
 
     function recordingScores() {
-        scoresList.innerHTML = initials, score;
-        localStorage.setItem("name "+initials, score);
-        console.log("name "+initials, score);
+        scoresList.innerHTML = owner, score;
+        localStorage.setItem("name "+ owner, score);
+        console.log("name "+ owner, score);
     }
 
 
