@@ -55,7 +55,7 @@ const questions = [
 
 
   var timer = document.querySelector("#timer");
-  var timerCount = 100;
+  var timerCount = 120;
   var timerInterval;
 
   var attempts = 0;
@@ -71,11 +71,11 @@ const questions = [
   function startQuiz(){
     currentQuestionIndex = 0;
     score = 0;
-    timerCount = 100;
+    timerCount = 120;
     nextButton.innerHTML = "Next question >";
     startButton.style.display = "none";
-    startTimer();
     showQuestion();
+    startTimer();
 
   }
 
@@ -121,7 +121,7 @@ const questions = [
   }
   
   function resetState(){
-    nextButton.style.display = "none";
+    nextButton.style.display ="none";
     while(answerButtons.firstChild){
       answerButtons.removeChild(answerButtons.firstChild)
       // Major credit to GreatStack on YouTube for removeChild method to clear page
@@ -155,16 +155,19 @@ const questions = [
   
   function showScore(){
     resetState();
+    recordAttempts();
     timerCount = 0;
     questionElement.innerHTML = "Congrats on completing the quiz. Your score is " + score + "/5";
     nextButton.style.display ="none";
     startButton.style.display ="block";
-    attempts++;
-    console.log("attempt" + attempts + score);
-    localStorage.attempts("attempts", score);
-
-
   }
+    function recordAttempts(){
+        attempts++;
+        console.log("attempt: " + attempts + score);
+        localStorage.attempts("attempts: ", score);
+    }
+
+
   
   // Below is the origin of the start quiz button
   nextButton.addEventListener("click", ()=>{
@@ -179,12 +182,3 @@ const questions = [
   
   startQuiz();
   
-  
-  
-  /*
-  {
-    question: 'What colors are the U.S. flag?',
-    answers: ["green, black, orange", "red, white, blue", "orange, yellow, green", "purple, grey, gold"],
-    correct: "red, white, blue"
-  }
-  */

@@ -4,10 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link href="assets-2/style.css">
+    <link rel="stylesheet" href="assets-2/view-score-style.css">
 </head>
 <body>
-    
+    <div class="app">
+        <div id="back-to-quiz"><a href="index.html">Back to quiz</a></div>
+        <h1 id="score-title">Current Scores</h1>
+        <div id="end">
+            <form class="end-form">
+                <h2 class="end-text">Enter your initials</h2>
+                <input type="text" name="name" id="initials" placeholder="Enter text here...">
+                <button class="btn" id="save-button" type="submit" onclick="saveHighScore(event)" disabled>Save Initials</button>
+                <h2 class="end-text">Current Scores</h2>
+                <ul id="scoresList"></ul>
+            </form>
+        </div>
+          
+        </div>
+      </div>
 
     <script src="assets-2/view-scores.js"></script>
 </body>
