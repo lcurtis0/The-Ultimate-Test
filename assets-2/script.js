@@ -50,6 +50,7 @@ const questions = [
   const questionElement = document.getElementById("question");
   const answerButtons = document.getElementById("answer-buttons");
   const nextButton = document.querySelector("#Next-id");
+  const quizContainer = document.querySelector(".quiz");
 
   var startButton = document.querySelector("#start-button");
 
@@ -63,9 +64,22 @@ const questions = [
   
   let currentQuestionIndex = 0;
   let score = 0;
+  let scoresarray = []; 
+
+/*
+  for the timer issue, try changing < to == on line 86
+
+  if that doesn't work, feel free to reach out again with a new ticket
+
+  I will close this question out now.
+  Once I close the question, please let us know how I did by leaving feedback.
+
+  happy coding!
+*/
 
 
   startButton.addEventListener("click", startQuiz);
+  
 
 
   function startQuiz(){
@@ -73,7 +87,6 @@ const questions = [
     score = 0;
     timerCount = 120;
     nextButton.innerHTML = "Next question >";
-    startButton.style.display = "none";
     showQuestion();
     startTimer();
 
@@ -83,7 +96,7 @@ const questions = [
     let timerInterval = setInterval(function () {
         timerCount--;
         timer.textContent = "Time: " + timerCount;
-        if (timerCount < 0) {
+        if (timerCount <= 0) {
             clearInterval(timerInterval);
             showScore();
 
@@ -96,6 +109,7 @@ const questions = [
   
   function showQuestion (){
     resetState();
+    startButton.style.display = "none";
     let currentQuestion = questions[currentQuestionIndex];
     // The the question array will be played out number of current questions index
     questionElement.innerHTML = currentQuestion.question;
@@ -133,8 +147,10 @@ const questions = [
     const isCorrect = selectedBtn.dataset.correct === "true";
     if(isCorrect){
       score++;
+      //score is added when correct
     } else {
       timerCount = timerCount - 10 ;
+      //
     }
     Array.from(answerButtons.children).forEach(button => {
         if(button.dataset.correct === "true"){
@@ -163,7 +179,9 @@ const questions = [
     function recordAttempts(){
         attempts++;
         console.log("attempts: " + attempts + " = " + score + "/5");
-        localStorage.setItem(attempts, score);
+        scoresarray.push(score);
+
+        localStorage.setItem("scoreskey", scoresarray);
     }
 
 
@@ -174,10 +192,9 @@ const questions = [
       //since the next button acts as the start quiz button it must know if there are questions avaliable. 
       //If they are avaliable then it is true 
       handleNextButton();
-    } else {
-      startQuiz();
-    }
+    } 
   });
   
 
   startQuiz();
+

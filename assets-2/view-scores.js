@@ -5,14 +5,11 @@ const mostRecentScore = document.querySelector("#mostRecentScore");
 
 const scoresList = document.querySelector("#scoresList");
 
-//const scores = JSON.parsel (localStorage.getItem("")) 
-
-const score = window.document (localStorage.getItem(score));
-
+const score = localStorage.getItem("scoreskey");
+console.log(score);
 saveButton.addEventListener("click", setOwner);
 
 function setOwner(){
-    const owner = initials.input;
     recordingScores();
 }
 
